@@ -36,10 +36,13 @@ def submit():
 
 def complier_output(code,inp,chk):
 	#checking if a file already exists or not in no the create one.
-	if not os.path.exists('Try.c'):
-		os.open('Try.c',os.O_CREAT)
+	if not os.path.exists('build'):
+		os.mkdir('build')
+	if not os.path.exists('build/Try.c'):
+		os.open('build/Try.c',os.O_CREAT)
+  
 	#creating a file descriptor to write in to the file.	
-	fd=os.open("Try.c",os.O_WRONLY)
+	fd=os.open("build/Try.c",os.O_WRONLY)
 	#truncate the content of the file to 0 bytes so that there is no overwriting in any way using the write operation.
 	os.truncate(fd,0)
 	#encode the string into bytes.
@@ -49,7 +52,7 @@ def complier_output(code,inp,chk):
 	#close the file descriptor.
 	os.close(fd)
 	#Compiling the c program file and retrieving the error if any. 
-	s=subprocess.run(['gcc','-o','new','Try.c'],stderr=PIPE,)
+	s=subprocess.run(['gcc','-o','build/new','build/Try.c'],stderr=PIPE,)
 	#storing the value returned by return code.
 	check=s.returncode
 	#checking whether program compiled succesfully or not.
@@ -57,10 +60,10 @@ def complier_output(code,inp,chk):
 		#cheking whether input for program is enabled or not.
 		if chk=='1':
 			#executing the program with input.
-			r=subprocess.run(["new.exe"],input=inp.encode(),stdout=PIPE)
+			r=subprocess.run(["build/new"],input=inp.encode(),stdout=PIPE)
 		else:
 			#executing the program without input.
-			r=subprocess.run(["new.exe"],stdout=PIPE)
+			r=subprocess.run(["build/new"],stdout=PIPE)
 		#return the output of the program.	
 		return r.stdout.decode("utf-8")
 	else:
